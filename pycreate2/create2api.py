@@ -284,7 +284,7 @@ class Create2(object):
 
     # ------------------------ Sensors ----------------------------
 
-    def get_sensors(self):
+    def get_sensors(self,pktid=100):
         """
         return: a namedtuple
 
@@ -292,13 +292,18 @@ class Create2(object):
             packet reques now.
         """
 
+        pktlen = {
+            100: 80,
+            0: 26
+        }
+
         opcode = OPCODES.SENSORS
-        cmd = (100,)
-        sensor_pkt_len = 80
+        cmd = (pktid,)
+        sensor_pkt_len = pktlen[pktid]
 
         self.SCI.write(opcode, cmd)
         time.sleep(0.015)  # wait 15 msec
         packet_byte_data = self.SCI.read(sensor_pkt_len)
-        sensors = SensorPacketDecoder(packet_byte_data)
+        sensors = SensorPacketDecoder(packet_byte_data, pktid)
 
         return sensors
