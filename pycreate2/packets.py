@@ -130,6 +130,26 @@ Sensors = namedtuple('Sensors', [
     'statis'
 ])
 
+Sensors0 = namedtuple('Sensors', [
+    'bumps_wheeldrops',
+    'wall',
+    'cliff_left',
+    'cliff_front_left',
+    'cliff_front_right',
+    'cliff_right',
+    'virtual_wall',
+    'overcurrents',
+    'dirt_detect',
+    'ir_opcode',
+    'buttons',
+    'distance',
+    'angle',
+    'charger_state',
+    'voltage',
+    'current',
+    'temperature',
+    'battery_charge',
+    'battery_capacity'])
 
 def SensorPacketDecoder(data, pktid=100):
     """
@@ -143,14 +163,14 @@ def SensorPacketDecoder(data, pktid=100):
         if len(data) != 80:
             raise Exception('Sensor: expected 80 bytes, got {}'.format(len(data)))
         return Sensors(
-            unpack_wheeldrops(unpack_bool_byte(data[0:1])[0]),
+            unpack_bumps_wheeldrops(unpack_bool_byte(data[0:1])[0]),
             unpack_bool_byte(data[1:2])[0],         # wall
             unpack_bool_byte(data[2:3])[0],         # cliff left
             unpack_bool_byte(data[3:4])[0],         # cliff front left
             unpack_bool_byte(data[4:5])[0],         # cliff front right
             unpack_bool_byte(data[5:6])[0],         # cliff right
             unpack_bool_byte(data[6:7])[0],         # virtual wall
-            uunpack_wheelovercurrents(unpack_unsigned_byte(data[7:8])[0]),
+            unpack_wheelovercurrents(unpack_unsigned_byte(data[7:8])[0]),
             unpack_byte(data[8:9])[0],              # dirt detect
             # packet 16 or data bit 9 - unused
             unpack_unsigned_byte(data[10:11])[0],   # ir opcode
@@ -198,15 +218,15 @@ def SensorPacketDecoder(data, pktid=100):
     elif pktid == 0:
         if len(data) != 26:
             raise Exception('Expected 26 bytes from sensor, got {}'.format(len(data)))
-        return Sensors(
-            unpack_wheeldrops(unpack_bool_byte(data[0:1])[0]),
+        return Sensors0(
+            unpack_bumps_wheeldrops(unpack_bool_byte(data[0:1])[0]),
             unpack_bool_byte(data[1:2])[0],         # wall
             unpack_bool_byte(data[2:3])[0],         # cliff left
             unpack_bool_byte(data[3:4])[0],         # cliff front left
             unpack_bool_byte(data[4:5])[0],         # cliff front right
             unpack_bool_byte(data[5:6])[0],         # cliff right
             unpack_bool_byte(data[6:7])[0],         # virtual wall
-            uunpack_wheelovercurrents(unpack_unsigned_byte(data[7:8])[0]),
+            unpack_wheelovercurrents(unpack_unsigned_byte(data[7:8])[0]),
             unpack_byte(data[8:9])[0],              # dirt detect
             # packet 16 or data bit 9 - unused
             unpack_unsigned_byte(data[10:11])[0],   # ir opcode
